@@ -15,7 +15,11 @@ const SignInButton = () => {
   const { pending } = useFormStatus();
 
   return (
-    <Button disabled={pending} className="w-full" variant="default">
+    <Button
+      disabled={pending}
+      className="w-full h-12 rounded-none bg-[#e31837] hover:bg-[#c7122f]"
+      variant="default"
+    >
       {pending ? "Signing In..." : "Sign In"}
     </Button>
   );
@@ -35,7 +39,7 @@ const CredentialsSignInForm = () => {
       <input type="hidden" name="callbackUrl" value={callbackUrl} />
       <div className="space-y-6">
         <div>
-          <Label htmlFor="email">Email</Label>
+          <Label htmlFor="email">Email Address</Label>
           <Input
             id="email"
             name="email"
@@ -43,7 +47,11 @@ const CredentialsSignInForm = () => {
             required
             autoComplete="email"
             defaultValue={signInDefaultValues.email}
+            className="h-12 rounded-none"
           />
+          <div className="mt-2 text-xs text-muted-foreground">
+            For example, name@example.com
+          </div>
         </div>
         <div>
           <Label htmlFor="password">Password</Label>
@@ -54,6 +62,7 @@ const CredentialsSignInForm = () => {
             required
             autoComplete="password"
             defaultValue={signInDefaultValues.password}
+            className="h-12 rounded-none"
           />
         </div>
         <div>
@@ -63,10 +72,23 @@ const CredentialsSignInForm = () => {
         {data && !data.success && (
           <div className="text-center text-destructive">{data.message}</div>
         )}
-        
+
+        <div className="text-center">
+          <Link
+            href={callbackUrl}
+            className="text-sm font-semibold text-[#e31837] hover:underline underline-offset-4"
+          >
+            Continue As Guest
+          </Link>
+        </div>
+
         <div className="text-sm text-center text-muted-foreground">
           Don&apos;t have an account?{" "}
-          <Link href="/sign-up" target="_self" className="link">
+          <Link
+            href="/sign-up"
+            target="_self"
+            className="font-semibold text-[#e31837] hover:underline underline-offset-4"
+          >
             Sign Up
           </Link>
         </div>

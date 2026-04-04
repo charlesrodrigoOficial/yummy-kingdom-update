@@ -7,8 +7,6 @@ import {
 } from "@/components/ui/card";
 import { Metadata } from "next";
 import Link from "next/link";
-import Image from "next/image";
-import { APP_NAME } from "@/lib/constants";
 import CredentialsSignInForm from "./credentials-signin-form";
 import { auth } from "@/auth";
 import { redirect } from "next/navigation";
@@ -31,28 +29,30 @@ const SignInPage = async (props: {
   }
 
   return (
-    <div className="w-full max-w-md mx-auto">
-      <Card>
-        <CardHeader className="space-y-4">
-          <Link href="/" className="flex-center">
-            <Image
-              src="/images/logo.svg"
-              width={100}
-              height={100}
-              alt={`${APP_NAME} logo`}
-              priority={true}
-            />
+    <Card className="rounded-none border shadow-sm">
+      <CardHeader className="space-y-2 pb-6">
+        <CardTitle className="text-4xl md:text-5xl font-black uppercase tracking-tight">
+          SIGN UP OR LOG IN
+        </CardTitle>
+        <CardDescription className="text-base">
+          Enter your email and password to continue.
+        </CardDescription>
+      </CardHeader>
+      <CardContent className="space-y-6">
+        <CredentialsSignInForm />
+        <div className="text-center text-sm text-muted-foreground">
+          By continuing, you agree to our{" "}
+          <Link href="/" className="underline underline-offset-4">
+            Terms of Service
+          </Link>{" "}
+          and{" "}
+          <Link href="/" className="underline underline-offset-4">
+            Privacy Policy
           </Link>
-          <CardTitle className="text-center"> Sign In </CardTitle>
-          <CardDescription className="text-center">
-            Wlcome to Intelura
-          </CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <CredentialsSignInForm />
-        </CardContent>
-      </Card>
-    </div>
+          .
+        </div>
+      </CardContent>
+    </Card>
   );
 };
 

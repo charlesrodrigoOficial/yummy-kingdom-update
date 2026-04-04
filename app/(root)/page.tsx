@@ -5,15 +5,8 @@ import {
   getFeaturedProducts,
   getLatestProduct,
 } from "@/lib/actions/product.actions";
-import {
-  SHOP_ADDRESS,
-  SHOP_CONTACT,
-  SHOP_TAGLINE,
-  SHOP_WHATSAPP,
-} from "@/lib/constants";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import Link from "next/link";
+import HomePromoBanner from "@/components/shared/home/home-promo-banner";
+import StartOrder from "@/components/shared/home/start-order";
 
 const Homepage = async () => {
   const latestProducts = await getLatestProduct();
@@ -21,29 +14,12 @@ const Homepage = async () => {
 
   return (
     <>
-      <section className="py-8 md:py-10">
-        <div className="rounded-3xl border p-6 md:p-10 bg-gradient-to-br from-amber-50 via-white to-red-50">
-          <Badge variant="secondary">Yummy Kingdom - Ja-Ela</Badge>
-          <h1 className="h1-bold mt-4">Fresh Pizza. Fast Delivery.</h1>
-          <p className="mt-4 text-muted-foreground max-w-3xl">{SHOP_TAGLINE}</p>
-          <p className="mt-4 text-sm">{SHOP_ADDRESS}</p>
-          <div className="mt-6 flex flex-wrap gap-3">
-            <Button asChild>
-              <Link href={`tel:+94${SHOP_CONTACT.replace(/\s+/g, "").slice(1)}`}>
-                Call {SHOP_CONTACT}
-              </Link>
-            </Button>
-            <Button asChild variant="outline">
-              <Link
-                href={`https://wa.me/94${SHOP_WHATSAPP.replace(/\s+/g, "").slice(1)}`}
-                target="_blank"
-              >
-                Order via WhatsApp
-              </Link>
-            </Button>
-          </div>
-        </div>
-      </section>
+      <div className="relative -mt-5 left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen">
+        <HomePromoBanner />
+      </div>
+      <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen bg-white">
+        <StartOrder />
+      </div>
       {featuredProducts.length > 0 && <ProductCarousel data={featuredProducts} />}
       <ProductList data={latestProducts} title="Popular Pizza Picks" />
       <ViewAllProductButton />

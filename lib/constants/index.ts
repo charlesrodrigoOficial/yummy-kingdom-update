@@ -4,6 +4,11 @@ export const APP_DESCRIPTION =
   "We deliver a wide range of Delicious Italian food with the Hidden secrets in the kingdom.";
 export const SERVER_URL =
   process.env.NEXT_PUBLIC_SERVER_URL || "http://localhost:3000";
+
+export const AUTH_SIDE_IMAGE =
+  process.env.NEXT_PUBLIC_AUTH_SIDE_IMAGE || "/images/img1.jpg";
+export const AUTH_SIDE_IMAGE_ALT =
+  process.env.NEXT_PUBLIC_AUTH_SIDE_IMAGE_ALT || `${APP_NAME} promo`;
 export const LATEST_PRODUCTS_LIMIT =
   Number(process.env.LATEST_PRODUCTS_LIMIT) || 4;
 export const SHOP_TAGLINE =
