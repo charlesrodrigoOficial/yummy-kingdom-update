@@ -1,4 +1,5 @@
 "use client";
+import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
@@ -16,12 +17,20 @@ const ProfileForm = () => {
   const form = useForm<z.infer<typeof updateProfileSchema>>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
-      name: session?.user?.name ?? "",
-      email: session?.user?.email ?? "",
+      name: "",
+      email: "",
     },
   });
 
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (!session?.user) return;
+    form.reset({
+      name: session.user.name ?? "",
+      email: session.user.email ?? "",
+    });
+  }, [form, session?.user]);
 
   const onSubmit = async (values: z.infer<typeof updateProfileSchema>) => {
     const res = await updateProfile(values);

@@ -12,6 +12,7 @@ import Autoplay from "embla-carousel-autoplay";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { Flame } from "lucide-react";
 
 type HeroSlide = {
   src: string;
@@ -47,7 +48,7 @@ const ProductCarousel = (props: ProductCarouselProps) => {
         !isHero
           ? fullBleed
             ? "mb-12 w-screen max-w-none ml-[calc(50%-50vw)]"
-            : "mb-12 w-full"
+            : "mb-12 w-full overflow-hidden rounded-2xl"
           : "h-full w-full",
         props.className
       )}
@@ -117,16 +118,23 @@ const ProductCarousel = (props: ProductCarouselProps) => {
             ))
           : props.data.map((product) => (
               <CarouselItem key={product.id} className="pl-0">
-                <Link href={`/product/${product.slug}`}>
-                  <div className="relative mx-auto">
+                <Link href={`/product/${product.slug}`} className="block">
+                  <div className="relative mx-auto overflow-hidden">
                     <Image
                       src={product.banner!}
                       alt={product.name}
-                      height="0"
-                      width="0"
-                      className="w-full h-auto"
+                      height={0}
+                      width={0}
                       sizes="100vw"
+                      className="h-auto w-full transition-transform duration-700 hover:scale-[1.03]"
                     />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/45 via-black/10 to-transparent" />
+                    <div className="absolute inset-0 flex items-end justify-center pb-12">
+                      <h2 className="inline-flex items-center gap-2 rounded-full bg-black/55 px-5 py-2 text-lg font-bold text-white backdrop-blur-md md:text-2xl">
+                        <Flame className="h-5 w-5 text-orange-400" />
+                        {product.name}
+                      </h2>
+                    </div>
                   </div>
                 </Link>
               </CarouselItem>

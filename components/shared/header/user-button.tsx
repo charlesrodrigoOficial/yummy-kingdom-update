@@ -15,11 +15,7 @@ const UserButton = async () => {
 
   if (!session) {
     return (
-      <Button
-        asChild
-        variant="outline"
-        className="h-10 rounded-none border-white bg-transparent px-6 font-semibold text-white hover:bg-white/10 hover:text-white"
-      >
+      <Button asChild size="sm" className="h-9 px-3">
         <Link href="/sign-in">
           Log In/Sign Up
         </Link>
@@ -54,29 +50,31 @@ const UserButton = async () => {
             </div>
           </DropdownMenuLabel>
 
-          <DropdownMenuItem>
-            <Link href="/user/profile" className="w-full">
+          <DropdownMenuItem asChild>
+            <Link href="/user/profile">
               User Profile
             </Link>
           </DropdownMenuItem>
 
-          <DropdownMenuItem>
-            <Link href="/user/orders" className="w-full">
+          <DropdownMenuItem asChild>
+            <Link href="/user/orders">
               Order History
             </Link>
           </DropdownMenuItem>
 
           {session?.user?.role === "admin" && (
-            <DropdownMenuItem>
-            <Link href="/admin/overview" className="w-full">
-              Admin
-            </Link>
-          </DropdownMenuItem>
+            <DropdownMenuItem asChild>
+              <Link href="/admin/overview">Admin</Link>
+            </DropdownMenuItem>
           )}
 
-          <DropdownMenuItem className="p-0 mb-1">
-            <form action={ signOutUser } className="w-full">
-              <Button className="w-full py-4 px-2 h-4 justify-start" variant={ "ghost" }>
+          <DropdownMenuItem asChild className="p-0 mb-1">
+            <form action={signOutUser} className="w-full">
+              <Button
+                type="submit"
+                className="h-4 w-full justify-start px-2 py-4"
+                variant="ghost"
+              >
                 Sign Out
               </Button>
             </form>

@@ -176,7 +176,7 @@ export async function deletePizzaCategory(id: string) {
       throw new Error("Category not found");
     }
 
-    const usedByProducts = await prisma.$queryRaw<Array<{ total: number }>`
+    const usedByProducts = await prisma.$queryRaw<Array<{ total: number }>>`
       SELECT COUNT(*)::int AS total
       FROM "Product"
       WHERE LOWER("category") = LOWER(${category[0].name})
