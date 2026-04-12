@@ -11,6 +11,14 @@ const currency = z
     "Price must have exactly two decimal places"
   );
 
+const urlOrPath = z
+  .string()
+  .refine(
+    (value) =>
+      value.startsWith("/") || /^https?:\/\/[^\s/$.?#].[^\s]*$/i.test(value),
+    "Must be a valid URL or site path"
+  );
+
 export const insterProductSchema = z.object({
   name: z.string().min(3, "Name must be at least 3 charachters"),
   slug: z.string().min(3, "Slug must be at least 3 charachters"),
@@ -148,3 +156,46 @@ export const insertReviewSchema = z.object({
     .min(1, "Rating must be at least 1")
     .max(5, "Rating must be at most 5"),
 });
+
+export const promotionTypeSchema = z.enum(["OFFER", "ADVERTISEMENT"]);
+export const promotionPlacementSchema = z.enum(["HOME", "OFFERS", "BOTH"]);
+
+const promotionBaseObjectSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  subtitle: z.string().max(120).optional().nullable(),
+  description: z.string().max(500).optional().nullable(),
+  imageUrl: urlOrPath.optional().nullable(),
+  ctaLabel: z.string().max(40).optional().nullable(),
+  ctaUrl: urlOrPath.optional().nullable(),
+  type: promotionTypeSchema,
+  placement: promotionPlacementSchema.default("BOTH"),
+  priority: z.coerce
+    .number()
+    .int("Priority must be a whole number")
+    .min(0, "Priority cannot be negative")
+    .max(1000, "Priority cannot exceed 1000")
+    .default(0),
+  isActive: z.boolean().default(true),
+  startsAt: z.coerce.date().optional().nullable(),
+  endsAt: z.coerce.date().optional().nullable(),
+});
+
+export const insertPromotionSchema = promotionBaseObjectSchema.refine(
+    (data) => !data.startsAt || !data.endsAt || data.endsAt > data.startsAt,
+    {
+      message: "End date must be after start date",
+      path: ["endsAt"],
+    }
+  );
+
+export const updatePromotionSchema = promotionBaseObjectSchema
+  .extend({
+    id: z.string().uuid("Invalid promotion id"),
+  })
+  .refine(
+    (data) => !data.startsAt || !data.endsAt || data.endsAt > data.startsAt,
+    {
+      message: "End date must be after start date",
+      path: ["endsAt"],
+    }
+  );

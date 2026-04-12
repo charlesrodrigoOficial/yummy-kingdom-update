@@ -1,14 +1,17 @@
 import { APP_NAME } from "@/lib/constants";
 import Image from "next/image";
 import Link from "next/link";
-import Menu from "@/components/shared/header/menu";
+import { Button } from "@/components/ui/button";
 import MainNav from "./main-nav";
 import AdminSearch from "@/components/admin/admin-search";
 import { getPendingOrdersCount } from "@/lib/actions/order.actions";
+import ModeToggle from "@/components/shared/header/mode-toggle";
+import UserButton from "@/components/shared/header/user-button";
+import { ShieldCheck } from "lucide-react";
 
 export const dynamic = "force-dynamic";
 
-export default async function UserLayout({
+export default async function AdminLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
@@ -16,32 +19,53 @@ export default async function UserLayout({
   const pendingOrdersCount = await getPendingOrdersCount();
 
   return (
-    <>
-      <div className="flex flex-col">
-        <div className="border-b container mx-auto">
-          <div className="flex items-center h-16 px-4">
-            <Link href="/" className="w-22">
+    <div className="flex min-h-screen flex-col bg-muted/20">
+      <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/80">
+        <div className="container mx-auto px-4">
+          <div className="flex h-16 items-center gap-3">
+            <Link
+              href="/admin/overview"
+              className="flex items-center gap-2 shrink-0"
+            >
               <Image
                 src="/images/logo.svg"
-                height={48}
-                width={48}
+                height={40}
+                width={40}
                 alt={APP_NAME}
+                className="rounded-md"
               />
+              <div className="hidden sm:block leading-tight">
+                <p className="text-xs text-muted-foreground">Admin Console</p>
+                <p className="text-sm font-semibold inline-flex items-center gap-1.5">
+                  <ShieldCheck className="h-4 w-4 text-primary" />
+                  {APP_NAME}
+                </p>
+              </div>
             </Link>
+
             <MainNav
-              className="mx-6"
+              className="hidden xl:flex flex-1 min-w-0 mx-4"
               pendingOrdersCount={pendingOrdersCount}
             />
-            <div className="ml-auto items-center flex space-x-4">
-              <AdminSearch />
-              <Menu />
+
+            <div className="ml-auto flex items-center gap-2">
+              <div className="hidden lg:block">
+                <AdminSearch />
+              </div>
+              <Button asChild variant="outline" size="sm" className="hidden md:inline-flex">
+                <Link href="/">View Storefront</Link>
+              </Button>
+              <ModeToggle />
+              <UserButton />
             </div>
           </div>
+          <div className="pb-3 xl:hidden">
+            <MainNav pendingOrdersCount={pendingOrdersCount} />
+          </div>
         </div>
-        <div className="flex-1 space-y-4 p-8 pt-6 container mx-auto">
-          {children}
-        </div>
-      </div>
-    </>
+      </header>
+      <div className="flex-1 container mx-auto px-4 py-6">{children}</div>
+      <div className="h-8" />
+    </div>
   );
 }

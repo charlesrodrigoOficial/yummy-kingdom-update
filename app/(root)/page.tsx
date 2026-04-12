@@ -7,6 +7,7 @@ import {
 } from "@/lib/actions/product.actions";
 import HomePromoBanner from "@/components/shared/home/home-promo-banner";
 import StartOrder from "@/components/shared/home/start-order";
+import HomeOffersGrid from "@/components/shared/home/home-offers-grid";
 
 const Homepage = async () => {
   const latestProducts = await getLatestProduct();
@@ -20,6 +21,7 @@ const Homepage = async () => {
       <div className="relative left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] w-screen bg-white">
         <StartOrder />
       </div>
+      <HomeOffersGrid />
       {featuredProducts.length > 0 && <ProductCarousel data={featuredProducts} />}
       <ProductList data={latestProducts} title="Popular Pizza Picks" />
       <ViewAllProductButton />

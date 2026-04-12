@@ -33,12 +33,19 @@ async function ensurePizzaCategoryTable() {
       "updatedAt" TIMESTAMP(6) NOT NULL DEFAULT NOW()
     )
   `);
+
+  // Backward compatibility: older migrations created "updatedAt" without a default.
+  await prisma.$executeRawUnsafe(`
+    ALTER TABLE "PizzaCategory"
+    ALTER COLUMN "createdAt" SET DEFAULT NOW(),
+    ALTER COLUMN "updatedAt" SET DEFAULT NOW()
+  `);
 }
 
 async function syncCategoriesFromProducts() {
   await prisma.$executeRawUnsafe(`
-    INSERT INTO "PizzaCategory" ("name")
-    SELECT DISTINCT "category"
+    INSERT INTO "PizzaCategory" ("name", "updatedAt")
+    SELECT DISTINCT BTRIM("category"), NOW()
     FROM "Product"
     WHERE "category" IS NOT NULL
       AND BTRIM("category") <> ''
@@ -80,8 +87,8 @@ export async function createPizzaCategory(
     });
 
     await prisma.$executeRaw`
-      INSERT INTO "PizzaCategory" ("name", "description")
-      VALUES (${parsed.name}, ${parsed.description})
+      INSERT INTO "PizzaCategory" ("name", "description", "updatedAt")
+      VALUES (${parsed.name}, ${parsed.description}, NOW())
     `;
 
     revalidatePath("/admin/categories");

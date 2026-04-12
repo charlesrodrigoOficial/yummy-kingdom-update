@@ -19,6 +19,10 @@ const links = [
     title: "Categories",
     href: "/admin/categories",
   },
+  {
+    title: "Promotions",
+    href: "/admin/promotions",
+  },
 
   {
     title: "Orders",
@@ -40,22 +44,28 @@ const MainNav = ({
 
   return (
     <nav
-      className={cn("flex items-center space-x-4 lg:space-x-6", className)}
+      className={cn(
+        "flex w-full items-center gap-1 overflow-x-auto rounded-xl border bg-muted/40 p-1",
+        className
+      )}
       {...props}
     >
       {links.map((item) => (
+        // Keep tabs compact and horizontally scrollable for smaller screens.
         <Link
           key={item.href}
           href={item.href}
           className={cn(
-            "text-sm font-medium transition-colors hover:text-primary",
-            pathname.includes(item.href) ? "" : "text-muted-foreground"
+            "shrink-0 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+            pathname.includes(item.href)
+              ? "bg-background text-foreground shadow-sm"
+              : "text-muted-foreground hover:bg-background/70 hover:text-foreground"
           )}
         >
           <span className="inline-flex items-center gap-2">
             {item.title}
             {item.href === "/admin/orders" && pendingOrdersCount > 0 && (
-              <Badge variant="destructive" className="h-5 px-2">
+              <Badge variant="destructive" className="h-5 px-2 text-[10px]">
                 {pendingOrdersCount}
               </Badge>
             )}

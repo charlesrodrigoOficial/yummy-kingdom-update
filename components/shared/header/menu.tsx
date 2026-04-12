@@ -10,6 +10,7 @@ import {
   House,
   Pizza,
   ClipboardList,
+  Tag,
 } from "lucide-react";
 import {
   Sheet,
@@ -34,6 +35,12 @@ const Menu = () => {
           <Link href="/search" className="flex items-center gap-2">
             <Pizza className="h-4 w-4" />
             <span>Menu</span>
+          </Link>
+        </Button>
+        <Button asChild variant="ghost" size="sm" className="h-9 px-2 lg:px-3">
+          <Link href="/offers" className="flex items-center gap-2">
+            <Tag className="h-4 w-4" />
+            <span>Offers</span>
           </Link>
         </Button>
         <Button
@@ -92,6 +99,12 @@ const Menu = () => {
               <Link href="/search" className="flex items-center gap-2">
                 <Pizza className="h-4 w-4" />
                 <span>Menu</span>
+              </Link>
+            </Button>
+            <Button asChild variant="ghost">
+              <Link href="/offers" className="flex items-center gap-2">
+                <Tag className="h-4 w-4" />
+                <span>Offers</span>
               </Link>
             </Button>
             <Button asChild variant="ghost">
