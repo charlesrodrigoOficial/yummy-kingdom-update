@@ -199,3 +199,14 @@ export const updatePromotionSchema = promotionBaseObjectSchema
       path: ["endsAt"],
     }
   );
+
+// Schema to insert shop reviews
+export const insertShopReviewSchema = z.object({
+  title: z.string().min(3, "Title must be at least 3 characters"),
+  description: z.string().min(3, "Description must be at least 3 characters"),
+  rating: z.coerce
+    .number()
+    .int()
+    .min(1, "Rating must be at least 1")
+    .max(5, "Rating must be at most 5"),
+});

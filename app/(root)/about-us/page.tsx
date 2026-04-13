@@ -1,6 +1,7 @@
 import { APP_NAME } from "@/lib/constants";
 import { Metadata } from "next";
 import Link from "next/link";
+import { auth } from "@/auth";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,12 +11,15 @@ import {
   SHOP_FACEBOOK,
 } from "@/lib/constants";
 import { Pizza, ShieldCheck, Sparkles } from "lucide-react";
+import ShopReviewSection from "@/components/shared/shop-review/shop-review-section";
 
 export const metadata: Metadata = {
   title: "About Us",
 };
 
-const AboutUsPage = () => {
+const AboutUsPage = async () => {
+  const session = await auth();
+
   const highlights = [
     {
       title: "Authentic Italian Flavor",
@@ -90,6 +94,8 @@ const AboutUsPage = () => {
           delicious Italian meals with a reliable local delivery experience.
         </p>
       </div>
+
+      <ShopReviewSection userId={session?.user?.id} />
     </section>
   );
 };
