@@ -13,6 +13,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
 import { Flame } from "lucide-react";
+import { motion } from "framer-motion";
 
 type HeroSlide = {
   src: string;
@@ -69,17 +70,27 @@ const ProductCarousel = (props: ProductCarouselProps) => {
               <CarouselItem key={slide.src} className="pl-0">
                 {slide.href ? (
                   <Link href={slide.href}>
-                    <div className="relative min-h-[260px] md:min-h-[360px]">
+                    <motion.div
+                      className="relative min-h-[260px] md:min-h-[360px]"
+                      initial={{ opacity: 0, scale: 1.02 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{ duration: 0.55, ease: "easeOut" }}
+                    >
                       <Image
                         src={slide.src}
                         alt="Hero banner"
                         fill
                         priority={index === 0}
-                        className="object-cover"
+                        className="object-cover transition-transform duration-1000 hover:scale-[1.04]"
                         sizes="(max-width: 768px) 100vw, 70vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
-                      <div className="absolute bottom-8 left-8 right-8">
+                      <motion.div
+                        className="absolute bottom-8 left-8 right-8"
+                        initial={{ opacity: 0, y: 18 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+                      >
                         <div className="max-w-xl whitespace-pre-line text-white uppercase font-black tracking-tight leading-[0.95] text-4xl md:text-5xl">
                           {slide.heading}
                         </div>
@@ -88,21 +99,31 @@ const ProductCarousel = (props: ProductCarouselProps) => {
                             {slide.footnote}
                           </div>
                         )}
-                      </div>
-                    </div>
+                      </motion.div>
+                    </motion.div>
                   </Link>
                 ) : (
-                  <div className="relative min-h-[260px] md:min-h-[360px]">
+                  <motion.div
+                    className="relative min-h-[260px] md:min-h-[360px]"
+                    initial={{ opacity: 0, scale: 1.02 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    transition={{ duration: 0.55, ease: "easeOut" }}
+                  >
                     <Image
                       src={slide.src}
                       alt="Hero banner"
                       fill
                       priority={index === 0}
-                      className="object-cover"
+                      className="object-cover transition-transform duration-1000 hover:scale-[1.04]"
                       sizes="(max-width: 768px) 100vw, 70vw"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/15 to-transparent" />
-                    <div className="absolute bottom-8 left-8 right-8">
+                    <motion.div
+                      className="absolute bottom-8 left-8 right-8"
+                      initial={{ opacity: 0, y: 18 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.5, delay: 0.15, ease: "easeOut" }}
+                    >
                       <div className="max-w-xl whitespace-pre-line text-white uppercase font-black tracking-tight leading-[0.95] text-4xl md:text-5xl">
                         {slide.heading}
                       </div>
@@ -111,8 +132,8 @@ const ProductCarousel = (props: ProductCarouselProps) => {
                           {slide.footnote}
                         </div>
                       )}
-                    </div>
-                  </div>
+                    </motion.div>
+                  </motion.div>
                 )}
               </CarouselItem>
             ))
