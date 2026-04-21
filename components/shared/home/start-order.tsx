@@ -13,7 +13,19 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { cn } from "@/lib/utils";
 import { useToast } from "@/hooks/use-toast";
-import { APP_NAME, SHOP_CITY, SHOP_GOOGLE_MAPS_URL } from "@/lib/constants";
+import {
+  APP_NAME,
+  SHOP_CITY,
+  SHOP_GOOGLE_MAPS_URL,
+  SHOP_MAP_EMBED_URL,
+} from "@/lib/constants";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 type OrderMode = "deliver" | "collect" | "dinein";
 type StartOrderVariant = "section" | "overlay";
@@ -67,6 +79,9 @@ const StartOrder = ({
   const [mode, setMode] = useState<OrderMode>("deliver");
   const [location, setLocation] = useState("");
   const [isLocating, setIsLocating] = useState(false);
+  const [isMapDialogOpen, setIsMapDialogOpen] = useState(false);
+  const [mapEmbedUrl, setMapEmbedUrl] = useState(SHOP_MAP_EMBED_URL);
+  const [mapExternalUrl, setMapExternalUrl] = useState(SHOP_GOOGLE_MAPS_URL);
 
   const selectedMode = useMemo(() => modeUi[mode], [mode]);
   const ModeIcon = selectedMode.icon;
@@ -107,20 +122,10 @@ const StartOrder = ({
       ? `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
       : SHOP_GOOGLE_MAPS_URL;
 
-  const updateMapTab = (
-    mapTab: Window | null,
-    latitude?: number,
-    longitude?: number
-  ) => {
-    const mapUrl = getMapUrl(latitude, longitude);
-
-    if (mapTab && !mapTab.closed) {
-      mapTab.location.href = mapUrl;
-      return;
-    }
-
-    window.open(mapUrl, "_blank", "noopener,noreferrer");
-  };
+  const getMapEmbedUrl = (latitude?: number, longitude?: number) =>
+    typeof latitude === "number" && typeof longitude === "number"
+      ? `https://www.google.com/maps?q=${latitude},${longitude}&output=embed`
+      : SHOP_MAP_EMBED_URL;
 
   const resolveAddress = async (latitude: number, longitude: number) => {
     const response = await fetch(
@@ -158,13 +163,14 @@ const StartOrder = ({
   };
 
   const onUseCurrentLocation = () => {
-    const mapTab = window.open("about:blank", "_blank", "noopener,noreferrer");
-    updateMapTab(mapTab);
+    setIsMapDialogOpen(true);
+    setMapEmbedUrl(getMapEmbedUrl());
+    setMapExternalUrl(getMapUrl());
 
     if (!("geolocation" in navigator)) {
       toast({
         title: "Location unavailable",
-        description: "Your browser does not support geolocation. Map opened for manual selection.",
+        description: "Your browser does not support geolocation. Use the map dialog to choose manually.",
         variant: "destructive",
       });
       return;
@@ -175,7 +181,8 @@ const StartOrder = ({
     navigator.geolocation.getCurrentPosition(
       async (position) => {
         const { latitude, longitude } = position.coords;
-        updateMapTab(mapTab, latitude, longitude);
+        setMapEmbedUrl(getMapEmbedUrl(latitude, longitude));
+        setMapExternalUrl(getMapUrl(latitude, longitude));
 
         try {
           const resolvedAddress = await resolveAddress(latitude, longitude);
@@ -183,14 +190,14 @@ const StartOrder = ({
             setLocation(resolvedAddress);
             toast({
               title: "Location detected",
-              description: "We filled your current address and opened map selection.",
+              description: "We filled your current address and centered the map.",
             });
           } else {
             const fallbackLocation = `${latitude.toFixed(5)}, ${longitude.toFixed(5)}`;
             setLocation(fallbackLocation);
             toast({
               title: "Coordinates detected",
-              description: "Address unavailable, so we used your coordinates. Map is open for manual adjustment.",
+              description: "Address unavailable, so we used your coordinates. You can still adjust on map.",
             });
           }
         } catch {
@@ -198,7 +205,7 @@ const StartOrder = ({
           setLocation(fallbackLocation);
           toast({
             title: "Coordinates detected",
-            description: "Address unavailable, so we used your coordinates. Map is open for manual adjustment.",
+            description: "Address unavailable, so we used your coordinates. You can still adjust on map.",
           });
         } finally {
           setIsLocating(false);
@@ -215,7 +222,7 @@ const StartOrder = ({
 
         toast({
           title: "Location access failed",
-          description: `${errorMessage} Map opened for manual selection.`,
+          description: `${errorMessage} You can choose location manually in the map dialog.`,
           variant: "destructive",
         });
       },
@@ -310,8 +317,42 @@ const StartOrder = ({
     </div>
   );
 
+  const mapDialog = (
+    <Dialog open={isMapDialogOpen} onOpenChange={setIsMapDialogOpen}>
+      <DialogContent className="max-w-4xl p-0 overflow-hidden">
+        <DialogHeader className="px-6 pt-6 pb-2">
+          <DialogTitle>Select Your Location</DialogTitle>
+          <DialogDescription>
+            Pan and zoom map, then copy your address into the field if needed.
+          </DialogDescription>
+        </DialogHeader>
+        <div className="px-6 pb-6 space-y-3">
+          <iframe
+            title="Location map"
+            src={mapEmbedUrl}
+            className="h-[60vh] w-full rounded-md border"
+            loading="lazy"
+            referrerPolicy="no-referrer-when-downgrade"
+          />
+          <div className="flex justify-end">
+            <Button asChild variant="outline">
+              <a href={mapExternalUrl} target="_blank" rel="noreferrer">
+                Open Full Google Maps
+              </a>
+            </Button>
+          </div>
+        </div>
+      </DialogContent>
+    </Dialog>
+  );
+
   if (variant === "overlay") {
-    return <div className="mx-auto w-full">{orderCard}</div>;
+    return (
+      <div className="mx-auto w-full">
+        {orderCard}
+        {mapDialog}
+      </div>
+    );
   }
 
   return (
@@ -322,6 +363,7 @@ const StartOrder = ({
         </h2>
 
         <div className="mt-6">{orderCard}</div>
+        {mapDialog}
       </div>
     </section>
   );

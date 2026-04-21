@@ -21,7 +21,7 @@ const Header = () => {
           </Link>
         </div>
 
-        <div className="hidden flex-1 min-w-0 items-center justify-end gap-2 md:flex xl:gap-3">
+        <div className="hidden min-w-0 flex-1 items-center justify-end gap-2 md:flex xl:gap-3">
           <div className="hidden xl:block">
             {/* <Search /> */}
           </div>
